@@ -70,4 +70,14 @@ Feel free to explore the code, experiment with different configurations, and ext
 
 ### Acknowledgments
 
-This project is inspired by the Transformers architecture proposed in the paper ["Attention Is All You Need"](https://arxiv.org/pdf/1706.03762.pdf) and is implemented using the `JAX` library developed by Google.
+This project is inspired by the Transformers architecture proposed in the paper ["Attention Is All You Need"](https://arxiv.org/pdf/1706.03762.pdf) and is implemented using the [JAX](https://github.com/google/jax) library developed by Google.
+
+```
+@software{jax2018github,
+  author = {James Bradbury and Roy Frostig and Peter Hawkins and Matthew James Johnson and Chris Leary and Dougal Maclaurin and George Necula and Adam Paszke and Jake Vander{P}las and Skye Wanderman-{M}ilne and Qiao Zhang},
+  title = {{JAX}: composable transformations of {P}ython+{N}um{P}y programs},
+  url = {http://github.com/google/jax},
+  version = {0.3.13},
+  year = {2018},
+}
+```
