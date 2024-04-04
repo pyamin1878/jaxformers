@@ -54,6 +54,8 @@ By exploring and understanding the code in this project, you can learn:
 
 ### Resources
 
+![alt text](image-1.png)
+
 For more information about Transformers and JAX, refer to the following resources:
 
 [Build a Transformer in JAX from scratch: how to write and train your own models](https://theaisummer.com/jax-transformer/)
