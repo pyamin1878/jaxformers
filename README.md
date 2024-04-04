@@ -58,10 +58,16 @@ By exploring and understanding the code in this project, you can learn:
 
 For more information about Transformers and JAX, refer to the following resources:
 
+[Andrej Karpathy's micrograd (neural networks from scratch)](https://www.youtube.com/watch?v=VMj-3S1tku0)
+
 [Build a Transformer in JAX from scratch: how to write and train your own models](https://theaisummer.com/jax-transformer/)
 
 [Attention is all you need: Discovering the Transformer paper](https://towardsdatascience.com/attention-is-all-you-need-discovering-the-transformer-paper-73e5ff5e0634)
 
 [JAX Quickstart](https://jax.readthedocs.io/en/latest/notebooks/quickstart.html)
 
+Feel free to explore the code, experiment with different configurations, and extend the project to deepen your understanding of Transformers and JAX.
 
+### Acknowledgments
+
+This project is inspired by the Transformers architecture proposed in the paper ["Attention Is All You Need"](https://arxiv.org/pdf/1706.03762.pdf) and is implemented using the `JAX` library developed by Google.
