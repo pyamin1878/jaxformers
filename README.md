@@ -1,6 +1,6 @@
 ## JAXformers: Learning Transformers Implementation with JAX
 
-![alt text](image.png)
+![alt text](images/image.png)
 
 This project aims to provide a simple and educational implementation of the Transformer architecture using the JAX library. The purpose is to learn and understand how Transformers work by writing the code from scratch and leveraging the capabilities of JAX for numerical computing and machine learning.
 
@@ -54,7 +54,7 @@ By exploring and understanding the code in this project, you can learn:
 
 ### Resources
 
-![alt text](image-1.png)
+![alt text](images/image-1.png)
 
 For more information about Transformers and JAX, refer to the following resources:
 
