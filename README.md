@@ -58,7 +58,7 @@ By exploring and understanding the code in this project, you can learn:
 
 For more information about Transformers and JAX, refer to the following resources:
 
-[Andrej Karpathy's micrograd (neural networks from scratch)](https://www.youtube.com/watch?v=VMj-3S1tku0)
+[Andrej Karpathy's Neural Networks: Zero to Hero](https://karpathy.ai/zero-to-hero.html)
 
 [Build a Transformer in JAX from scratch: how to write and train your own models](https://theaisummer.com/jax-transformer/)
 
