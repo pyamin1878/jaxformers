@@ -58,13 +58,14 @@ By exploring and understanding the code in this project, you can learn:
 
 For more information about Transformers and JAX, refer to the following resources:
 
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pyamin1878/jaxformers/blob/main/notebooks/quickstart.ipynb)
+
+
 [Andrej Karpathy's Neural Networks: Zero to Hero](https://karpathy.ai/zero-to-hero.html)
 
 [Build a Transformer in JAX from scratch: how to write and train your own models](https://theaisummer.com/jax-transformer/)
 
 [Attention is all you need: Discovering the Transformer paper](https://towardsdatascience.com/attention-is-all-you-need-discovering-the-transformer-paper-73e5ff5e0634)
-
-[JAX Quickstart](https://jax.readthedocs.io/en/latest/notebooks/quickstart.html)
 
 Feel free to explore the code, experiment with different configurations, and extend the project to deepen your understanding of Transformers and JAX.
 
