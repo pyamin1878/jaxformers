@@ -69,6 +69,17 @@ For more information about Transformers and JAX, refer to the following resource
 
 Feel free to explore the code, experiment with different configurations, and extend the project to deepen your understanding of Transformers and JAX.
 
+### TODO
+```[tasklist]
+- [ ] Add an embedding layer to convert input tokens into dense vectors
+- [ ] Implement the encoder and decoder modules
+- [x] Include positional encoding to incorporate positional information
+- [ ] Implement the final linear layer and softmax for output prediction
+- [ ] Add layer normalization after each sublayer 
+- [ ] Apply dropout regularization to prevent overfitting
+- [ ] Optimize performance and leverage JAX features
+```
+
 ### Acknowledgments
 
 This project is inspired by the Transformers architecture proposed in the paper ["Attention Is All You Need"](https://arxiv.org/pdf/1706.03762.pdf) and is implemented using the [JAX](https://github.com/google/jax) library developed by Google.
