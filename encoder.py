@@ -48,5 +48,29 @@ class EncoderLayer:
         self.dropout_rate = dropout_rate
 
     def __call__(self, x: jnp.ndarray, mask: Optional[jnp.ndarray] = None) -> jnp.ndarray:
+        attention_output = self.multi_head_attention(x, x, x, mask)
+        x = x + attention_output
+        x = jnp.dot(x, self.layer_norm1)
+        
+        ff_output = self.feed_forward(x)
+        x = x + ff_output
+        x = jnp.dot(x, self.layer_norm2)
+        
+        x = jnp.where(jnp.random.uniform(x.shape) < self.dropout_rate, 0, x)
+        
+        return x
+    
+class Encoder:
+    def __init_(self, num_layers: int, d_model: int, num_heads: int, d_ff: int, dropout_rate: float):
+        self.layers = [EncoderLayer(d_model, num_heads, d_ff, dropout_rate) for _ in range(num_layers)]
+
+    def __call_(self, x: jnp.ndarray, mask: Optional[jnp.ndarray] = None) -> jnp.ndarray:
+        seq_length, _ = x.shape
+        x += positional_encoding(seq_length, x.shape[-1])
+
+        for layer in self.layers:
+            x = layer(x, mask)
+
+        return x
 
 
