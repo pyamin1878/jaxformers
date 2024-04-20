@@ -1,22 +1,31 @@
 import jax.numpy as jnp
-from jax import random
-from transformer_layer import transformer_layer
+from transformer import Transformer
 
-# Initialize random key
-key = random.PRNGKey(0)
-
-# Define input data and hyperparameters
-batch_size = 2
-seq_length = 5
-d_model = 64
+# Define the model hyperparameters
+num_encoder_layers = 6
+num_decoder_layers = 6
+d_model = 512
 num_heads = 8
-d_ff = 128
+d_ff = 2048
+input_vocab_size = 1000
+target_vocab_size = 1000
+dropout_rate = 0.1
 
-# Generate random input data
-input_data = random.normal(key, (batch_size, seq_length, d_model))
+# Create an instance of the Transformer model
+transformer = Transformer(
+    num_encoder_layers, num_decoder_layers, d_model, num_heads, d_ff,
+    input_vocab_size, target_vocab_size, dropout_rate
+)
 
-# Pass the input through the transformer layer
-output = transformer_layer(input_data, num_heads, d_model, d_ff)
+# Generate random input data for demonstration
+batch_size = 2
+src_seq_length = 10
+tgt_seq_length = 8
+src = jnp.random.randint(0, input_vocab_size, (batch_size, src_seq_length))
+tgt = jnp.random.randint(0, target_vocab_size, (batch_size, tgt_seq_length))
 
-print("Input shape:", input_data.shape)
+# Forward pass through the Transformer model
+output = transformer(src, tgt)
+
+print("Input shape:", src.shape)
 print("Output shape:", output.shape)
