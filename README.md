@@ -1,94 +1,129 @@
-## JAXformers: Transformer Implementation with JAX
+# JAXformers
 
-![alt text](images/image.png)
+A lightweight, from-scratch implementation of the Transformer architecture using JAX.
 
-JAXformers is a lightweight, from-scratch implementation of the Transformer architecture using JAX. It provides clean, readable implementations suitable for research experimentation, prototyping novel architectures, and production use cases requiring customizable attention mechanisms. The library leverages JAX's automatic differentiation and XLA compilation for high-performance training and inference on CPU, GPU, and TPU.
+![Transformer Architecture](images/image.png)
 
-### Project Structure 
+JAXformers provides clean, readable implementations suitable for research experimentation, prototyping novel architectures, and production use cases requiring customizable attention mechanisms. The library leverages JAX's automatic differentiation and XLA compilation for high-performance training and inference on CPU, GPU, and TPU.
 
-The project is organized into the following files:
+## Installation
 
-`attention.py`: Contains the implementation of the scaled dot-product attention mechanism.
-
-`transformer_layer.py`: Defines the multi-head attention and the complete Transformer layer.
-
-`main.py`:  Demonstrates how to use the Transformer layer and perform a simple forward pass.
-
-### Getting Started 
-
-To run the code and experiment with the Transformer layer, follow these steps:
-
-1. Install dependencies 
-
-```python
+```bash
 pip install jax jaxlib
 ```
 
-2. Clone the repo:
-
+For GPU support:
+```bash
+pip install jax[cuda12]
 ```
+
+## Quick Start
+
+```bash
 git clone https://github.com/pyamin1878/jaxformers
-``` 
-
-3. Navigate to the project directory:
-
-```
 cd jaxformers
+python main.py
 ```
 
-4. Run the main script:
+## Usage
 
 ```python
-python main.py 
+import jax.numpy as jnp
+from jax import random
+from encoder import Encoder
+
+# Configuration
+batch_size = 2
+seq_length = 10
+d_model = 64
+num_heads = 8
+d_ff = 256
+num_layers = 2
+
+# Create encoder
+encoder = Encoder(
+    num_layers=num_layers,
+    d_model=d_model,
+    num_heads=num_heads,
+    d_ff=d_ff,
+    dropout_rate=0.1
+)
+
+# Generate input
+key = random.PRNGKey(42)
+x = random.normal(key, (batch_size, seq_length, d_model))
+
+# Forward pass (inference mode - no dropout)
+output = encoder(x)
+
+# Forward pass (training mode - with dropout)
+output = encoder(x, key=key)
 ```
 
-### Features
+## Architecture
 
-- Scaled dot-product attention mechanism
-- Multi-head attention with configurable heads
-- Complete Transformer layer implementation
-- Pure JAX with no additional framework dependencies
+| Module | File | Description |
+|--------|------|-------------|
+| Scaled Dot-Product Attention | `attention.py` | Core attention mechanism with optional masking |
+| Positional Encoding | `positional_encoding.py` | Sinusoidal position embeddings |
+| Multi-Head Attention | `encoder.py` | Parallel attention heads with head splitting |
+| Feed-Forward Network | `encoder.py` | Two-layer MLP with ReLU activation |
+| Encoder Layer | `encoder.py` | Self-attention + FFN with residual connections and layer norm |
+| Encoder | `encoder.py` | Stack of encoder layers with positional encoding |
+
+## Features
+
+- Scaled dot-product attention with optional masking
+- Multi-head attention with configurable number of heads
+- Sinusoidal positional encodings
+- Layer normalization
+- Dropout regularization (training mode)
+- Pure JAX - no Flax, Haiku, or other framework dependencies
 - XLA compilation support for accelerated performance
-- Automatic differentiation for training
 
-### Resources
+## Project Structure
 
-![alt text](images/image-1.png)
+```
+jaxformers/
+├── attention.py           # Scaled dot-product attention
+├── positional_encoding.py # Sinusoidal positional encodings
+├── encoder.py             # Multi-head attention, FFN, encoder layers
+├── main.py                # Demo script
+└── notebooks/
+    └── quickstart.ipynb   # JAX tutorial notebook
+```
 
-For more information about Transformers and JAX, refer to the following resources:
+## Roadmap
+
+- [ ] Token embedding layer
+- [ ] Decoder module with cross-attention
+- [ ] Final linear layer and softmax for output prediction
+- [ ] Learnable positional encodings
+- [ ] Training loop example
+
+## Resources
+
+![Attention Mechanism](images/image-1.png)
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pyamin1878/jaxformers/blob/main/notebooks/quickstart.ipynb)
 
+- [Attention Is All You Need](https://arxiv.org/pdf/1706.03762.pdf) - Original Transformer paper
+- [The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/) - Visual guide
+- [JAX Documentation](https://jax.readthedocs.io/)
 
-[Andrej Karpathy's Neural Networks: Zero to Hero](https://karpathy.ai/zero-to-hero.html)
+## Acknowledgments
 
-[Build a Transformer in JAX from scratch: how to write and train your own models](https://theaisummer.com/jax-transformer/)
+Based on the Transformer architecture from ["Attention Is All You Need"](https://arxiv.org/pdf/1706.03762.pdf) (Vaswani et al., 2017).
 
-[Attention is all you need: Discovering the Transformer paper](https://towardsdatascience.com/attention-is-all-you-need-discovering-the-transformer-paper-73e5ff5e0634)
-
-Feel free to explore the code, experiment with different configurations, and extend the project for your research or production needs.
-
-### TODO
-```[tasklist]
-- [ ] Add an embedding layer to convert input tokens into dense vectors
-- [ ] Implement the encoder and decoder modules
-- [x] Include positional encoding to incorporate positional information
-- [ ] Implement the final linear layer and softmax for output prediction
-- [ ] Add layer normalization after each sublayer 
-- [ ] Apply dropout regularization to prevent overfitting
-- [ ] Optimize performance and leverage JAX features
-```
-
-### Acknowledgments
-
-This project is inspired by the Transformers architecture proposed in the paper ["Attention Is All You Need"](https://arxiv.org/pdf/1706.03762.pdf) and is implemented using the [JAX](https://github.com/google/jax) library developed by Google.
-
-```
+```bibtex
 @software{jax2018github,
   author = {James Bradbury and Roy Frostig and Peter Hawkins and Matthew James Johnson and Chris Leary and Dougal Maclaurin and George Necula and Adam Paszke and Jake Vander{P}las and Skye Wanderman-{M}ilne and Qiao Zhang},
   title = {{JAX}: composable transformations of {P}ython+{N}um{P}y programs},
   url = {http://github.com/google/jax},
-  version = {0.3.13},
   year = {2018},
 }
 ```
+
+## License
+
+MIT
