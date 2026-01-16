@@ -1,8 +1,8 @@
-## JAXformers: Learning Transformers Implementation with JAX
+## JAXformers: Transformer Implementation with JAX
 
 ![alt text](images/image.png)
 
-This project aims to provide a simple and educational implementation of the Transformer architecture using the JAX library. The purpose is to learn and understand how Transformers work by writing the code from scratch and leveraging the capabilities of JAX for numerical computing and machine learning.
+JAXformers is a lightweight, from-scratch implementation of the Transformer architecture using JAX. It provides clean, readable implementations suitable for research experimentation, prototyping novel architectures, and production use cases requiring customizable attention mechanisms. The library leverages JAX's automatic differentiation and XLA compilation for high-performance training and inference on CPU, GPU, and TPU.
 
 ### Project Structure 
 
@@ -42,15 +42,14 @@ cd jaxformers
 python main.py 
 ```
 
-### Learning Objectives
+### Features
 
-By exploring and understanding the code in this project, you can learn:
-
-- How the scaled dot-product attention mechanism works.
-- How multi-head attention is implemented and used in Transformers.
-- The structure and components of a Transformer layer.
-- How to use JAX for numerical computations and building neural networks.
-- The benefits of using JAX, such as automatic differentiation and XLA compilation.
+- Scaled dot-product attention mechanism
+- Multi-head attention with configurable heads
+- Complete Transformer layer implementation
+- Pure JAX with no additional framework dependencies
+- XLA compilation support for accelerated performance
+- Automatic differentiation for training
 
 ### Resources
 
@@ -67,7 +66,7 @@ For more information about Transformers and JAX, refer to the following resource
 
 [Attention is all you need: Discovering the Transformer paper](https://towardsdatascience.com/attention-is-all-you-need-discovering-the-transformer-paper-73e5ff5e0634)
 
-Feel free to explore the code, experiment with different configurations, and extend the project to deepen your understanding of Transformers and JAX.
+Feel free to explore the code, experiment with different configurations, and extend the project for your research or production needs.
 
 ### TODO
 ```[tasklist]
