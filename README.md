@@ -27,59 +27,104 @@ python main.py
 
 ## Usage
 
+### Encoder-Decoder Transformer (Seq2Seq)
+
 ```python
-import jax.numpy as jnp
 from jax import random
-from encoder import Encoder
+from transformer import Transformer
 
-# Configuration
-batch_size = 2
-seq_length = 10
-d_model = 64
-num_heads = 8
-d_ff = 256
-num_layers = 2
-
-# Create encoder
-encoder = Encoder(
-    num_layers=num_layers,
-    d_model=d_model,
-    num_heads=num_heads,
-    d_ff=d_ff,
-    dropout_rate=0.1
+# Initialize model
+key = random.PRNGKey(42)
+model = Transformer(
+    src_vocab_size=10000,
+    tgt_vocab_size=10000,
+    d_model=512,
+    num_heads=8,
+    num_encoder_layers=6,
+    num_decoder_layers=6,
+    d_ff=2048,
+    max_seq_length=512,
+    dropout_rate=0.1,
+    key=key,
 )
 
-# Generate input
-key = random.PRNGKey(42)
-x = random.normal(key, (batch_size, seq_length, d_model))
+# Forward pass
+src_tokens = ...  # (batch_size, src_seq_len)
+tgt_tokens = ...  # (batch_size, tgt_seq_len)
+log_probs = model(src_tokens, tgt_tokens)
 
-# Forward pass (inference mode - no dropout)
-output = encoder(x)
-
-# Forward pass (training mode - with dropout)
-output = encoder(x, key=key)
+# Generate (autoregressive decoding)
+generated = model.generate(src_tokens, max_length=100, start_token=1, end_token=2)
 ```
+
+### Decoder-Only Language Model
+
+```python
+from jax import random
+from transformer import TransformerLM
+
+# Initialize model
+key = random.PRNGKey(42)
+model = TransformerLM(
+    vocab_size=10000,
+    d_model=512,
+    num_heads=8,
+    num_layers=6,
+    d_ff=2048,
+    max_seq_length=512,
+    dropout_rate=0.1,
+    learnable_pos=True,  # Use learnable positional encodings
+    key=key,
+)
+
+# Forward pass (returns log probabilities)
+tokens = ...  # (batch_size, seq_len)
+log_probs = model(tokens)
+```
+
+### Training Example
+
+```bash
+python train_example.py
+```
+
+See `train_example.py` for a complete training loop demonstrating:
+- Loss computation with cross-entropy
+- Gradient computation with `jax.value_and_grad`
+- Parameter updates with SGD
 
 ## Architecture
 
 | Module | File | Description |
 |--------|------|-------------|
-| Scaled Dot-Product Attention | `attention.py` | Core attention mechanism with optional masking |
+| Scaled Dot-Product Attention | `attention.py` | Core attention with optional masking |
 | Positional Encoding | `positional_encoding.py` | Sinusoidal position embeddings |
-| Multi-Head Attention | `encoder.py` | Parallel attention heads with head splitting |
-| Feed-Forward Network | `encoder.py` | Two-layer MLP with ReLU activation |
-| Encoder Layer | `encoder.py` | Self-attention + FFN with residual connections and layer norm |
-| Encoder | `encoder.py` | Stack of encoder layers with positional encoding |
+| Token Embedding | `embedding.py` | Vocabulary to dense vectors |
+| Learnable Positional Encoding | `embedding.py` | Trainable position embeddings |
+| Transformer Embedding | `embedding.py` | Combined token + positional embedding |
+| Multi-Head Attention | `encoder.py`, `decoder.py` | Parallel attention heads |
+| Feed-Forward Network | `encoder.py`, `decoder.py` | Two-layer MLP with ReLU |
+| Encoder Layer | `encoder.py` | Self-attention + FFN with residuals |
+| Encoder | `encoder.py` | Stack of encoder layers |
+| Decoder Layer | `decoder.py` | Masked self-attn + cross-attn + FFN |
+| Decoder | `decoder.py` | Stack of decoder layers with causal mask |
+| Output Layer | `transformer.py` | Linear projection + softmax |
+| Transformer | `transformer.py` | Full encoder-decoder model |
+| TransformerLM | `transformer.py` | Decoder-only language model |
 
 ## Features
 
+- Full encoder-decoder Transformer for seq2seq tasks
+- Decoder-only Transformer for language modeling
 - Scaled dot-product attention with optional masking
-- Multi-head attention with configurable number of heads
-- Sinusoidal positional encodings
-- Layer normalization
-- Dropout regularization (training mode)
-- Pure JAX - no Flax, Haiku, or other framework dependencies
-- XLA compilation support for accelerated performance
+- Multi-head attention with configurable heads
+- Sinusoidal and learnable positional encodings
+- Token embeddings with Xavier initialization
+- Causal masking for autoregressive decoding
+- Layer normalization and dropout
+- Autoregressive generation with temperature sampling
+- Pure JAX - no Flax, Haiku, or other dependencies
+- XLA compilation support
 
 ## Project Structure
 
@@ -87,19 +132,15 @@ output = encoder(x, key=key)
 jaxformers/
 ├── attention.py           # Scaled dot-product attention
 ├── positional_encoding.py # Sinusoidal positional encodings
-├── encoder.py             # Multi-head attention, FFN, encoder layers
-├── main.py                # Demo script
+├── embedding.py           # Token and positional embeddings
+├── encoder.py             # Encoder layers and full encoder
+├── decoder.py             # Decoder layers and full decoder
+├── transformer.py         # Full Transformer and LM models
+├── main.py                # Component tests
+├── train_example.py       # Training loop example
 └── notebooks/
-    └── quickstart.ipynb   # JAX tutorial notebook
+    └── quickstart.ipynb   # JAX tutorial
 ```
-
-## Roadmap
-
-- [ ] Token embedding layer
-- [ ] Decoder module with cross-attention
-- [ ] Final linear layer and softmax for output prediction
-- [ ] Learnable positional encodings
-- [ ] Training loop example
 
 ## Resources
 

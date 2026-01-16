@@ -13,38 +13,71 @@ JAXformers is a lightweight, from-scratch implementation of the Transformer arch
 pip install jax jaxlib
 ```
 
-**Run the main script:**
+**Run component tests:**
 ```bash
 python main.py
 ```
 
+**Run training example:**
+```bash
+python train_example.py
+```
+
 ## Architecture
 
-The codebase implements the standard Transformer architecture with the following components:
+The codebase implements the complete Transformer architecture:
 
-- **Attention mechanism**: Scaled dot-product attention (expects `attention.py`)
-- **Positional encoding**: Sinusoidal position embeddings (expects `positional_encoding.py`)
-- **Encoder**: Stack of encoder layers with multi-head attention, feed-forward networks, and layer normalization (`encoder.py`)
+### Core Components
+- `attention.py` - Scaled dot-product attention with optional masking
+- `positional_encoding.py` - Sinusoidal positional encodings
+- `embedding.py` - Token embeddings, learnable positional encodings, combined transformer embedding
 
-Note: The repository currently only contains `encoder.py`. The imports reference `attention.py` and `positional_encoding.py` which need to be implemented.
+### Encoder
+- `encoder.py` - Multi-head attention, feed-forward network, encoder layers, and full encoder stack
+
+### Decoder
+- `decoder.py` - Decoder layers with masked self-attention and cross-attention, causal mask generation, full decoder stack
+
+### Full Models
+- `transformer.py` - Complete Transformer (encoder-decoder), TransformerLM (decoder-only), and output layer with softmax
 
 ## JAX Patterns
 
-This codebase uses JAX idioms:
+This codebase uses pure JAX without Flax or Haiku:
+
 - `jax.numpy` (imported as `jnp`) for array operations
-- Classes with `__call__` methods for module-like behavior (not using Flax/Haiku)
-- Manual weight initialization with `jnp.zeros`
+- Classes with `__call__` methods for module-like behavior
+- Xavier/Glorot initialization for weights
+- JAX PRNG system with explicit key passing for randomness
+- Optional `key` parameter for dropout (None = inference mode, key = training mode)
 
-Key JAX functions to be familiar with:
+Key JAX functions used:
 - `jit` - JIT compilation for performance
-- `grad` - Automatic differentiation
+- `grad` / `value_and_grad` - Automatic differentiation
 - `vmap` - Auto-vectorization for batching
+- `random.split` / `random.fold_in` - PRNG key management
 
-## Current TODO (from README)
+## Model Variants
 
-- Add embedding layer for input token conversion
-- Implement encoder and decoder modules
-- Add final linear layer and softmax for output
-- Add layer normalization after each sublayer
-- Apply dropout regularization
-- Optimize with JAX features
+### Transformer (encoder-decoder)
+For sequence-to-sequence tasks like translation:
+```python
+model = Transformer(src_vocab_size, tgt_vocab_size, d_model, num_heads, ...)
+output = model(src_tokens, tgt_tokens)
+```
+
+### TransformerLM (decoder-only)
+For language modeling / text generation:
+```python
+model = TransformerLM(vocab_size, d_model, num_heads, num_layers, ...)
+output = model(tokens)
+```
+
+## Parameter Shapes
+
+- Token embedding: `(vocab_size, d_model)`
+- Positional encoding: `(max_seq_length, d_model)`
+- Attention Q/K/V: Split from `(batch, seq, d_model)` to `(batch, heads, seq, d_k)`
+- FFN layer 1: `(d_model, d_ff)`
+- FFN layer 2: `(d_ff, d_model)`
+- Output projection: `(d_model, vocab_size)`
