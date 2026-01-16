@@ -1,7 +1,15 @@
 import jax.numpy as jnp
+from jax import random
 from attention import scaled_dot_product_attention
 from positional_encoding import positional_encoding
 from typing import Optional
+
+
+def layer_norm(x: jnp.ndarray, eps: float = 1e-6) -> jnp.ndarray:
+    """Apply layer normalization along the last dimension."""
+    mean = jnp.mean(x, axis=-1, keepdims=True)
+    variance = jnp.var(x, axis=-1, keepdims=True)
+    return (x - mean) / jnp.sqrt(variance + eps)
 
 class MultiHeadAttention:
     def __init__(self, d_model: int, num_heads: int):
@@ -42,34 +50,42 @@ class EncoderLayer:
     def __init__(self, d_model: int, num_heads: int, d_ff: int, dropout_rate: float = 0.1):
         self.multi_head_attention = MultiHeadAttention(d_model, num_heads)
         self.feed_forward = FeedForward(d_model, d_ff)
-        self.layer_norm1 = jnp.zeros((d_model,))
-        self.layer_norm2 = jnp.zeros((d_model,))
         self.dropout_rate = dropout_rate
-        
-    def __call__(self, x: jnp.ndarray, mask: Optional[jnp.ndarray] = None) -> jnp.ndarray:
+
+    def __call__(
+        self, x: jnp.ndarray, mask: Optional[jnp.ndarray] = None, key: Optional[random.PRNGKey] = None
+    ) -> jnp.ndarray:
+        # Multi-head self-attention with residual connection and layer norm
         attention_output = self.multi_head_attention(x, x, x, mask)
-        x = x + attention_output
-        x = jnp.dot(x, self.layer_norm1)
-        
+        x = layer_norm(x + attention_output)
+
+        # Feed-forward with residual connection and layer norm
         ff_output = self.feed_forward(x)
-        x = x + ff_output
-        x = jnp.dot(x, self.layer_norm2)
-        
-        x = jnp.where(jnp.random.uniform(x.shape) < self.dropout_rate, 0, x)
-        
+        x = layer_norm(x + ff_output)
+
+        # Apply dropout during training if key is provided
+        if key is not None and self.dropout_rate > 0:
+            keep_prob = 1.0 - self.dropout_rate
+            mask = random.bernoulli(key, keep_prob, x.shape)
+            x = jnp.where(mask, x / keep_prob, 0)
+
         return x
 
 class Encoder:
     def __init__(self, num_layers: int, d_model: int, num_heads: int, d_ff: int, dropout_rate: float = 0.1):
         self.layers = [EncoderLayer(d_model, num_heads, d_ff, dropout_rate) for _ in range(num_layers)]
-        
-    def __call__(self, x: jnp.ndarray, mask: Optional[jnp.ndarray] = None) -> jnp.ndarray:
-        seq_length, _ = x.shape
-        x += positional_encoding(seq_length, x.shape[-1])
-        
-        for layer in self.layers:
-            x = layer(x, mask)
-        
+
+    def __call__(
+        self, x: jnp.ndarray, mask: Optional[jnp.ndarray] = None, key: Optional[random.PRNGKey] = None
+    ) -> jnp.ndarray:
+        # x shape: (batch_size, seq_length, d_model)
+        seq_length = x.shape[1]
+        x = x + positional_encoding(seq_length, x.shape[-1])
+
+        for i, layer in enumerate(self.layers):
+            layer_key = random.fold_in(key, i) if key is not None else None
+            x = layer(x, mask, layer_key)
+
         return x
 
 
