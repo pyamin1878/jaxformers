@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-JAXformers is an educational implementation of the Transformer architecture using JAX. The goal is to learn and understand Transformers by building them from scratch while leveraging JAX's automatic differentiation and XLA compilation.
+JAXformers is a lightweight, from-scratch implementation of the Transformer architecture using JAX. It provides clean, readable implementations suitable for research experimentation, prototyping novel architectures, and production use cases requiring customizable attention mechanisms. The library leverages JAX's automatic differentiation and XLA compilation for high-performance training and inference on CPU, GPU, and TPU.
 
 ## Commands
 
